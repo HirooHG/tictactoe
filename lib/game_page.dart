@@ -50,7 +50,6 @@ class _GamePageState extends State<GamePage> {
 
       case 'turn':
         turn = true;
-        //some comment
         break;
 
       case 'play':
