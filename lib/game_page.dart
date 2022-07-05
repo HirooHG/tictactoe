@@ -153,13 +153,14 @@ class _GamePageState extends State<GamePage> {
           game.send('play', '$index;${widget.character}');
 
           turn = false;
-          setState((){});
         }
 
         if(_verifGrid()){
           popup(context: context, text: "${game.playerName} won !", title: "GG !");
+          game.send('resign', '');
           Navigator.pop(context);
         }
+        setState((){});
       },
       child: GridTile(
         child: Card(
