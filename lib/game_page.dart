@@ -77,6 +77,11 @@ class _GamePageState extends State<GamePage> {
         Navigator.of(context).pop();
         break;
 
+      case 'lost':
+        Navigator.of(context).pop();
+        popup(context: context, text: "You lost", title: "NT !");
+        break;
+
       case 'play':
         var data = (message["data"] as String).split(';');
         grid[int.parse(data[0])] = data[1];
