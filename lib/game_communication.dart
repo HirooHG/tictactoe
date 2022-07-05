@@ -11,6 +11,7 @@ class GameCommunication {
 
   String _playerName = "";
   String _playerID = "";
+  int _playerPoint = 0;
 
   String get playerName => _playerName;
   String get playerId => _playerID;
@@ -30,6 +31,7 @@ class GameCommunication {
     switch(message["action"]){
       case 'connect':
         _playerID = message["data"];
+        _playerPoint = message["points"] as int;
         break;
 
       default:
@@ -41,13 +43,18 @@ class GameCommunication {
   }
   send(String action, String data){
 
+    int other = 0;
+
     if (action == 'join'){
       _playerName = data;
+      other = _playerPoint;
     }
+
 
     sockets.send(json.encode({
       "action": action,
-      "data": data
+      "data": data,
+      "other": other
     }));
   }
 

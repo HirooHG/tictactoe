@@ -29,7 +29,6 @@ class _StartPageState extends State<StartPage> {
   _onGameDataReceived(message) {
     switch (message["action"]) {
       case "players_list":
-
         playersList = message["data"];
 
         setState(() {});
@@ -40,6 +39,7 @@ class _StartPageState extends State<StartPage> {
           builder: (BuildContext context)
           => GamePage(
             opponentName: message["data"],
+            points: message["other"],
             character: 'O',
           ),
         ));
@@ -51,7 +51,7 @@ class _StartPageState extends State<StartPage> {
 
     setState(() {});
   }
-  _onPlayGame(String opponentName, String opponentId){
+  _onPlayGame(String opponentName, String opponentId, int points){
 
     game.send('new_game', opponentId);
 
@@ -59,6 +59,7 @@ class _StartPageState extends State<StartPage> {
       builder: (BuildContext context)
       => GamePage(
         opponentName: opponentName,
+        points: points,
         character: 'X',
       ),
     ));
@@ -73,9 +74,10 @@ class _StartPageState extends State<StartPage> {
     List<Widget> children = playersList.map((playerInfo) {
       return ListTile(
         title: Text(playerInfo["name"]),
+        leading: Text(playerInfo["point"].toString()),
         trailing: game.playerId == playerInfo["id"] ? const Text("Me") : TextButton(
           onPressed: (){
-            _onPlayGame(playerInfo["name"], playerInfo["id"]);
+            _onPlayGame(playerInfo["name"], playerInfo["id"], playerInfo["point"]);
           },
           child: const Text('Play'),
         ),

@@ -35,12 +35,18 @@ class GamePage extends StatefulWidget {
     Key? key,
     required this.opponentName,
     required this.character,
+    required this.points
   }): super(key: key);
 
   ///
   /// Nom de l'adversaire
   ///
   final String opponentName;
+
+  ///
+  /// Points de l'adversaire
+  ///
+  final int points;
 
   ///
   /// Caratère utilisé pour les jetons du jeu ("X" ou "O")
