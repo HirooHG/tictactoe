@@ -48,14 +48,11 @@ class _GamePageState extends State<GamePage> {
         Navigator.of(context).pop();
         break;
 
-      case 'turn':
-        turn = true;
-        setState(() {});
-        break;
-
       case 'play':
         var data = (message["data"] as String).split(';');
         grid[int.parse(data[0])] = data[1];
+
+        turn = true;
 
         setState((){});
         break;
