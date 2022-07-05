@@ -126,7 +126,7 @@ class _GamePageState extends State<GamePage> {
       bottom: false,
       child: Scaffold(
         appBar: AppBar(
-            title: Text('Game against: ${widget.opponentName}', style: const TextStyle(fontSize: 16.0)),
+            title: Text('Game against: ${widget.opponentName} ; ${widget.points}', style: const TextStyle(fontSize: 16.0)),
             actions: <Widget>[
               TextButton(
                 onPressed: _doResign,
