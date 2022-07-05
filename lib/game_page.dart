@@ -148,17 +148,16 @@ class _GamePageState extends State<GamePage> {
       onTap: () {
         if (grid[index] == "" && turn){
           grid[index] = widget.character;
-          //popup(context: context, text: "grid[$index] = ${widget.character}");
 
           if(_verifGrid()){
-            popup(context: context, text: "${game.playerName} won !", title: "GG !");
-            game.send('resign', '');
+            game.send('win', '');
             Navigator.pop(context);
+            popup(context: context, text: "${game.playerName} won !", title: "GG !");
+          }else{
+            game.send('play', '$index;${widget.character}');
+
+            turn = false;
           }
-
-          game.send('play', '$index;${widget.character}');
-
-          turn = false;
         }
         setState((){});
       },
