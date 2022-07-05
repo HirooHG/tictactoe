@@ -86,6 +86,8 @@ class _GamePageState extends State<GamePage> {
       case 'lost':
         Navigator.of(context).pop();
         popup(context: context, text: "You lost", title: "NT !");
+
+        setState(() {});
         break;
 
       case 'play':
@@ -164,6 +166,8 @@ class _GamePageState extends State<GamePage> {
             game.send('win', '');
             Navigator.pop(context);
             popup(context: context, text: "${game.playerName} won !", title: "GG !");
+
+            setState(() {});
           }else{
             game.send('play', '$index;${widget.character}');
 
