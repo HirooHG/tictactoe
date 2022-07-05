@@ -61,7 +61,10 @@ class _GamePageState extends State<GamePage> {
         break;
     }
   }
-  _doResign() => game.send('resign', '');
+  _doResign(BuildContext context){
+    game.send('resign', '');
+    Navigator.pop(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +76,7 @@ class _GamePageState extends State<GamePage> {
             title: Text('Game against: ${widget.opponentName}', style: const TextStyle(fontSize: 16.0)),
             actions: <Widget>[
               TextButton(
-                onPressed: _doResign,
+                onPressed: _doResign(context),
                 child: const Text('Resign', style: TextStyle(color: Colors.white))
               ),
             ]
