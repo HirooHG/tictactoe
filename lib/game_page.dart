@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'game_communication.dart';
 
-Future<void> popup({String? title = "GG !", String? text = "", required BuildContext context}) async{
+Future<void> popup({String? title = "", String? text = "", required BuildContext context}) async{
 
   await showDialog<void>(
     context: context,
@@ -9,7 +9,7 @@ Future<void> popup({String? title = "GG !", String? text = "", required BuildCon
       return AlertDialog(
         title: Text(title!),
         content: Text(
-          "$text won !" ,
+          text!,
           style: const TextStyle(
               color: Colors.blue,
               fontWeight: FontWeight.bold,
@@ -148,6 +148,7 @@ class _GamePageState extends State<GamePage> {
       onTap: () {
         if (grid[index] == "" && turn){
           grid[index] = widget.character;
+          popup(context: context, text: "grid[$index] = ${widget.character}");
 
           game.send('play', '$index;${widget.character}');
 
@@ -156,7 +157,7 @@ class _GamePageState extends State<GamePage> {
         }
 
         if(_verifGrid()){
-          popup(context: context, text: game.playerName);
+          popup(context: context, text: "${game.playerName} won !", title: "GG !");
           Navigator.pop(context);
         }
       },
