@@ -146,6 +146,12 @@ class _GamePageState extends State<GamePage> {
 
     return InkWell(
       onTap: () {
+        if(_verifGrid()){
+          popup(context: context, text: "${game.playerName} won !", title: "GG !");
+          game.send('resign', '');
+          Navigator.pop(context);
+        }
+
         if (grid[index] == "" && turn){
           grid[index] = widget.character;
           popup(context: context, text: "grid[$index] = ${widget.character}");
@@ -153,12 +159,6 @@ class _GamePageState extends State<GamePage> {
           game.send('play', '$index;${widget.character}');
 
           turn = false;
-        }
-
-        if(_verifGrid()){
-          popup(context: context, text: "${game.playerName} won !", title: "GG !");
-          game.send('resign', '');
-          Navigator.pop(context);
         }
         setState((){});
       },
