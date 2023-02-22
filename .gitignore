@@ -47,5 +47,5 @@ app.*.map.json
 /android/app/release
 
 # Js websockets
-tictactoe/node_modules
-tictactoe/package-lock.json
+/tictactoe/node_modules
+/tictactoe/package-lock.json
