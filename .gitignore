@@ -48,4 +48,3 @@ app.*.map.json
 
 # Js websockets
 /websockets/node_modules/
-/websockets/package-lock.json
