@@ -36,6 +36,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   web_socket_channel: ^2.2.0
   rename_app: ^1.1.0
+  bloc: ^8.1.1
+  flutter_bloc: ^8.1.2
+  socket_io_client: ^2.0.1
 
 dev_dependencies:
   flutter_test:

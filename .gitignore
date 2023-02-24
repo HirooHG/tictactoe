@@ -46,5 +46,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Js websockets
-/websockets/node_modules/
+/lib/ressources.dart
