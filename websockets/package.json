@@ -1,13 +1,18 @@
 {
-  "name" : "tictactoe-app-web-socket",
-  "version" : "1.0.0",
-  "description" : "tic tac toe in the web socket exemple",
-  "author": {
-    "name" : "Hiroo"
+  "name": "tictactoe-app-web-socket",
+  "version": "1.0.0",
+  "description": "tic tac toe in the web socket exemple",
+  "scripts": {
+    "websocket": "node main.js",
+    "socketio": "node main-socketio.js"
   },
-  "main" : "main.js",
-  "private" : true,
+  "author": {
+    "name": "Hiroo"
+  },
+  "main": "main.js",
+  "private": true,
   "dependencies": {
+    "socket.io": "^4.6.1",
     "websocket": "^1.0.34"
   }
 }
