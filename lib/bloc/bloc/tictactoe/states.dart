@@ -1,35 +1,39 @@
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
-import 'package:web_socket_channel/io.dart';
 
 import '../message.dart';
 
 abstract class TicTacState {
 
-  final IOWebSocketChannel socket;
+  WebSocket? socket;
   final List<Function> listeners;
-  bool isOn;
 
   TicTacState({
     required this.socket,
     required this.listeners,
-    required this.isOn
   });
+
+  void onMessage(message);
 }
 class InitTicTacState extends TicTacState {
   InitTicTacState({
     required super.socket,
     required super.listeners,
-    required super.isOn
   });
 
-  void init(BuildContext context) {
-    socket.sink.close();
-
-    socket.stream.listen(onMessage);
-    isOn = true;
+  Future<void> init() async {
+    try {
+      socket = await WebSocket.connect("ws://hugogolliet.fr:34001/ws");
+      socket!.listen(onMessage);
+      print(socket!.closeCode);
+    } catch(e) {
+      print("websocket failed : $e");
+    }
   }
 
+  @override
   void onMessage(message) {
     for(var i in listeners) {
       i(message);
@@ -40,7 +44,6 @@ class MessageSentState extends TicTacState {
   MessageSentState({
     required super.socket,
     required super.listeners,
-    required super.isOn,
     required this.message
   }) {
     sendMessage();
@@ -49,14 +52,20 @@ class MessageSentState extends TicTacState {
   final Message message;
 
   void sendMessage() {
-    if(isOn) {
-      socket.sink.add(message());
+    if(socket != null) {
+      socket!.add(message());
+    }
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
     }
   }
 }
 class RemovedListenerState extends TicTacState {
   RemovedListenerState({
-    required super.isOn,
     required super.listeners,
     required super.socket,
     required this.callback
@@ -67,14 +76,18 @@ class RemovedListenerState extends TicTacState {
   final Function callback;
 
   void remove() {
-    if(isOn) {
-      listeners.remove(callback);
+    listeners.remove(callback);
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
     }
   }
 }
 class AddedListenerState extends TicTacState {
   AddedListenerState({
-    required super.isOn,
     required super.listeners,
     required super.socket,
     required this.callback
@@ -85,22 +98,32 @@ class AddedListenerState extends TicTacState {
   final Function callback;
 
   void add() {
-    if(isOn) {
-      listeners.add(callback);
+    listeners.add(callback);
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
     }
   }
 }
 class ClosedListenerState extends TicTacState {
   ClosedListenerState({
-    required super.isOn,
     required super.listeners,
     required super.socket,
   });
 
-  void close() {
-    if(isOn) {
-      socket.sink.close();
-      isOn = false;
+  Future<void> close() async {
+    if(socket != null) {
+      await socket!.close();
+    }
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
     }
   }
 }
