@@ -25,9 +25,14 @@ class InitTicTacState extends TicTacState {
 
   Future<void> init() async {
     try {
-      socket = await WebSocket.connect("ws://hugogolliet.fr:34001/ws");
+      socket = await WebSocket.connect(
+        "ws://192.168.1.37:3402/ws/tictactoe"
+      );
+      listeners.add((message) {
+        print(message);
+      });
+      print(listeners);
       socket!.listen(onMessage);
-      print(socket!.closeCode);
     } catch(e) {
       print("websocket failed : $e");
     }

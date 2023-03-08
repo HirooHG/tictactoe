@@ -26,10 +26,11 @@ class ConnectView extends StatelessWidget {
           builder: (context, state) {
             return Center(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextButton(
                     onPressed: () {
-                      var message = Message(action: "yay", data: "aya");
+                      var message = Message(action: "connect", data: "aya");
                       BlocProvider.of<TicTacBloc>(context).add(SendMessageEvent(message: message));
                     },
                     child: const Text(
@@ -43,7 +44,16 @@ class ConnectView extends StatelessWidget {
                       }));
                     },
                     child: const Text(
-                      "print"
+                      "add"
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      var callback = state.listeners[0];
+                      BlocProvider.of<TicTacBloc>(context).add(RemoveListenerEvent(callback: callback));
+                    },
+                    child: const Text(
+                        "remove"
                     ),
                   ),
                 ],
