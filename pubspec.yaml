@@ -61,6 +61,41 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
+
+  fonts:
+    - family: Ubuntu
+      fonts:
+        - asset: assets/ubuntu/Ubuntu-R.ttf
+        - asset: assets/ubuntu/Ubuntu-RI.ttf
+          style: italic
+        - asset: assets/ubuntu/Ubuntu-B.ttf
+          weight: 700
+        - asset: assets/ubuntu/Ubuntu-BI.ttf
+          weight: 700
+          style: italic
+        - asset: assets/ubuntu/Ubuntu-L.ttf
+          weight: 300
+        - asset: assets/ubuntu/Ubuntu-LI.ttf
+          weight: 300
+          style: italic
+        - asset: assets/ubuntu/Ubuntu-M.ttf
+          weight: 500
+        - asset: assets/ubuntu/Ubuntu-MI.ttf
+          weight: 500
+          style: italic
+    - family: Ubuntu Mono
+      fonts:
+        - asset: assets/ubuntu/UbuntuMono-R.ttf
+        - asset: assets/ubuntu/UbuntuMono-RI.ttf
+          style: italic
+        - asset: assets/ubuntu/UbuntuMono-B.ttf
+          weight: 700
+        - asset: assets/ubuntu/UbuntuMono-BI.ttf
+          weight: 700
+          style: italic
+    - family: Ubuntu Condensed
+      fonts:
+        - asset: assets/ubuntu/Ubuntu-C.ttf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

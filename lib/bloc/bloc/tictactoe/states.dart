@@ -1,7 +1,7 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 import '../message.dart';
 
@@ -28,13 +28,11 @@ class InitTicTacState extends TicTacState {
       socket = await WebSocket.connect(
         "ws://192.168.1.37:3402/ws/tictactoe"
       );
-      listeners.add((message) {
-        print(message);
-      });
-      print(listeners);
       socket!.listen(onMessage);
     } catch(e) {
-      print("websocket failed : $e");
+      if(kDebugMode) {
+        print("websocket failed : $e");
+      }
     }
   }
 
