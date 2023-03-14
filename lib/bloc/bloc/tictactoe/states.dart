@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:test_websockets/ressources.dart';
 
 import '../message.dart';
 
@@ -26,7 +27,7 @@ class InitTicTacState extends TicTacState {
   Future<void> init() async {
     try {
       socket = await WebSocket.connect(
-        "ws://192.168.1.37:3402/ws/tictactoe"
+        Ressources.address
       );
       socket!.listen(onMessage);
     } catch(e) {
