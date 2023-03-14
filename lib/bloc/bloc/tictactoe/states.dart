@@ -26,9 +26,7 @@ class InitTicTacState extends TicTacState {
 
   Future<void> init() async {
     try {
-      socket = await WebSocket.connect(
-        Ressources.address
-      );
+      socket = await WebSocket.connect(Ressources.address);
       socket!.listen(onMessage);
     } catch(e) {
       if(kDebugMode) {

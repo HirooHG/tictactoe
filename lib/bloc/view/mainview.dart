@@ -11,7 +11,7 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PageManager, bool>(
-      builder: (context, page) => (!page) ? ConnectView() : const HomeView(),
+      builder: (context, page) => (page) ? const HomeView() : ConnectView()
     );
   }
 }

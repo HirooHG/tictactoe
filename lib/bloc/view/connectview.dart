@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_websockets/bloc/bloc/cubits.dart';
+import 'package:test_websockets/bloc/bloc/message.dart';
 
 import 'package:test_websockets/bloc/bloc/tictactoe/events.dart';
 import 'package:test_websockets/bloc/bloc/tictactoe/states.dart';
@@ -50,7 +52,7 @@ class ConnectView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    "Welcome, What's your name ?",
+                    "Welcome, What is your name ?!",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontFamily: "Ubuntu",
@@ -81,7 +83,9 @@ class ConnectView extends StatelessWidget {
                         )
                       ),
                       onSubmitted: (value) {
-
+                        BlocProvider.of<PageManager>(context).change(true);
+                        Message msg = Message(action: "connect", data: value);
+                        BlocProvider.of<TicTacBloc>(context).add(SendMessageEvent(message: msg));
                       },
                     ),
                   )

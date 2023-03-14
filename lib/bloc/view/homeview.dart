@@ -44,8 +44,8 @@ class _HomeViewState extends State<HomeView> {
         title: const Text(
           "Tic Tac Toe App",
           style: TextStyle(
-              fontFamily: "Ubuntu",
-              color: Color(0xFF66EFD7)
+            fontFamily: "Ubuntu",
+            color: Color(0xFF66EFD7)
           ),
         ),
       ),
@@ -56,7 +56,6 @@ class _HomeViewState extends State<HomeView> {
               width: width,
               height: height,
               color: const Color(0xFF1a1a1a),
-
             );
           },
         ),
