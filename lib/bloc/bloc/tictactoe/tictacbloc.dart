@@ -1,15 +1,19 @@
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 
 import 'events.dart';
 import 'states.dart';
+import '../player.dart';
 
 class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
   TicTacBloc() : super(InitTicTacState(
     socket: null,
     listeners: [],
+    players: [],
+    currentPlayer: Player.empty()
   )) {
     on<TicTacEvent>(onTicTacEvent);
   }
@@ -19,7 +23,9 @@ class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
       case InitTicTacEvent:
         var nextState = InitTicTacState(
           socket: state.socket,
-          listeners: state.listeners
+          listeners: state.listeners,
+          players: state.players,
+          currentPlayer: state.currentPlayer,
         );
         await nextState.init();
         emit(nextState);
@@ -28,6 +34,8 @@ class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
         emit(MessageSentState(
           socket: state.socket,
           listeners: state.listeners,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
           message: (event as SendMessageEvent).message
         ));
         break;
@@ -35,6 +43,8 @@ class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
         emit(RemovedListenerState(
           socket: state.socket,
           listeners: state.listeners,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
           callback: (event as RemoveListenerEvent).callback
         ));
         break;
@@ -42,6 +52,8 @@ class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
         emit(AddedListenerState(
           socket: state.socket,
           listeners: state.listeners,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
           callback: (event as AddListenerEvent).callback
         ));
         break;
@@ -49,9 +61,54 @@ class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
         var nextState = ClosedListenerState(
           socket: state.socket,
           listeners: state.listeners,
+          players: state.players,
+          currentPlayer: state.currentPlayer,
         );
         await nextState.close();
         emit(nextState);
+        break;
+      case RefreshPlayersEvent:
+        emit(
+          RefreshedPlayersState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+            message: (event as RefreshPlayersEvent).message
+          )
+        );
+        break;
+      case UpdatePlayerEvent:
+        emit(
+          UpdatedPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: Player.fromJson(jsonDecode((event as UpdatePlayerEvent).message.data))
+          )
+        );
+        break;
+      case NewGameEvent:
+        emit(
+          NewGameState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+            player: (event as NewGameEvent).player
+          )
+        );
+        break;
+      case ChallengedPlayerEvent:
+        emit(
+          ChallengedPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+            message: (event as ChallengedPlayerEvent).message
+          )
+        );
         break;
     }
   }

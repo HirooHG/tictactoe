@@ -83,9 +83,7 @@ class ConnectView extends StatelessWidget {
                         )
                       ),
                       onSubmitted: (value) {
-                        BlocProvider.of<PageManager>(context).change(true);
-                        Message msg = Message(action: "connect", data: value);
-                        BlocProvider.of<TicTacBloc>(context).add(SendMessageEvent(message: msg));
+                        BlocProvider.of<PageManager>(context).change(PageValue(value: true, name: value));
                       },
                     ),
                   )

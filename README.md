@@ -1,3 +1,3 @@
 # Tic Tac Toe web sockets
 
-A Tic Tac Toe project in order to learn about web sockets
+A simple tic tac toe app using websockets
