@@ -5,6 +5,8 @@ class Player {
   String name;
   int score;
   Player? opponent;
+  String? character;
+  bool turn = false;
 
   Player.empty() :
       id = "",

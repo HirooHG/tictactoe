@@ -205,6 +205,8 @@ class NewGameState extends TicTacState {
   void newGame() {
     var msg = Message(action: "newGame", data: player.id);
     socket!.add(msg());
+    player.character = 'X';
+    currentPlayer.character = 'O';
     currentPlayer.opponent = player;
     player.opponent = currentPlayer;
   }
@@ -231,6 +233,8 @@ class ChallengedPlayerState extends TicTacState {
 
   void newGame() {
     var player = players.singleWhere((element) => element.id == message.data);
+    player.character = 'O';
+    currentPlayer.character = 'X';
     currentPlayer.opponent = player;
     player.opponent = currentPlayer;
   }
