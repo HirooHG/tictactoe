@@ -58,7 +58,7 @@ class _HomeViewState extends State<HomeView> {
                   value: BlocProvider.of<TicTacBloc>(context)
                 )
               ],
-              child: const GameView()
+              child: GameView(prevContext: context)
             )
           )
         );
@@ -110,7 +110,7 @@ class _HomeViewState extends State<HomeView> {
                         ),
                       ),
                       SizedBox(
-                        height: height * 0.8,
+                        height: height * 0.60,
                         child: ListView.builder(
                           itemCount: tictacState.players.length,
                           itemBuilder: (context, index) {
@@ -162,7 +162,7 @@ class _HomeViewState extends State<HomeView> {
                                                 value: BlocProvider.of<TicTacBloc>(context)
                                               )
                                             ],
-                                            child: const GameView()
+                                            child: GameView(prevContext: context)
                                           )
                                         )
                                       );
@@ -190,10 +190,10 @@ class _HomeViewState extends State<HomeView> {
                           Text(
                             tictacState.currentPlayer.name,
                             style: const TextStyle(
-                              color: Color(0xFF66EFD7),
-                              fontFamily: "Ubuntu",
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold
+                                color: Color(0xFF66EFD7),
+                                fontFamily: "Ubuntu",
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold
                             ),
                           ),
                           Text(

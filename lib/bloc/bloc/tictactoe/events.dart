@@ -46,3 +46,23 @@ class ChallengedPlayerEvent extends TicTacEvent {
 
   final Message message;
 }
+class WinPlayerEvent extends TicTacEvent {
+  const WinPlayerEvent();
+}
+class ResignPlayerEvent extends TicTacEvent {
+  const ResignPlayerEvent();
+}
+class PlayPlayerEvent extends TicTacEvent {
+  const PlayPlayerEvent({required this.message});
+
+  final Message message;
+}
+class OpponentPlayPlayerEvent extends TicTacEvent {
+  const OpponentPlayPlayerEvent();
+}
+class OpponentResignPlayerEvent extends TicTacEvent {
+  const OpponentResignPlayerEvent();
+}
+class PlayerLoseEvent extends TicTacEvent {
+  const PlayerLoseEvent();
+}

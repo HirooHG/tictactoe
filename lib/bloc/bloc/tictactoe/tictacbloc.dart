@@ -109,6 +109,67 @@ class TicTacBloc extends Bloc<TicTacEvent, TicTacState> {
           )
         );
         break;
+      case WinPlayerEvent:
+        emit(
+          WonPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+          )
+        );
+        break;
+      case ResignPlayerEvent:
+        emit(
+          ResignedPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+          )
+        );
+        break;
+      case PlayPlayerEvent:
+        emit(
+          PlayedPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+            message: (event as PlayPlayerEvent).message
+          )
+        );
+        break;
+      case OpponentPlayPlayerEvent:
+        emit(
+          OpponentPlayedPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+          )
+        );
+        break;
+      case OpponentResignPlayerEvent:
+        emit(
+          OpponentResignedPlayerState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+          )
+        );
+        break;
+      case PlayerLoseEvent:
+        emit(
+          PlayerLostState(
+            listeners: state.listeners,
+            socket: state.socket,
+            players: state.players,
+            currentPlayer: state.currentPlayer,
+          )
+        );
+        break;
     }
   }
 }

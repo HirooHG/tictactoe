@@ -50,6 +50,8 @@ class InitTicTacState extends TicTacState {
     }
   }
 }
+
+// connection
 class MessageSentState extends TicTacState {
   MessageSentState({
     required super.socket,
@@ -145,6 +147,8 @@ class ClosedListenerState extends TicTacState {
     }
   }
 }
+
+// player(s)
 class RefreshedPlayersState extends TicTacState {
   RefreshedPlayersState({
     required super.listeners,
@@ -159,11 +163,30 @@ class RefreshedPlayersState extends TicTacState {
   final Message message;
 
   void getPlayers() {
-    players.clear();
     var list = message.data as List<dynamic>;
+    var newList = <Player>[];
     for(var i in list) {
       var player = Player.fromJson(jsonDecode(i));
-      players.add(player);
+      newList.add(player);
+    }
+
+    add(newList);
+    remove(newList);
+  }
+
+  void remove(List<Player> list) {
+    for(var i in players) {
+      if(!list.any((element) => element.id == i.id)) {
+        players.remove(i);
+      }
+    }
+  }
+
+  void add(List<Player> list) {
+    for(var i in list) {
+      if(!players.any((element) => element.id == i.id)) {
+        players.add(i);
+      }
     }
   }
 
@@ -189,6 +212,8 @@ class UpdatedPlayerState extends TicTacState {
     }
   }
 }
+
+// New game
 class NewGameState extends TicTacState {
   NewGameState({
     required super.listeners,
@@ -207,6 +232,8 @@ class NewGameState extends TicTacState {
     socket!.add(msg());
     player.character = 'X';
     currentPlayer.character = 'O';
+    player.turn = true;
+    currentPlayer.turn = false;
     currentPlayer.opponent = player;
     player.opponent = currentPlayer;
   }
@@ -235,8 +262,174 @@ class ChallengedPlayerState extends TicTacState {
     var player = players.singleWhere((element) => element.id == message.data);
     player.character = 'O';
     currentPlayer.character = 'X';
+    player.turn = false;
+    currentPlayer.turn = true;
     currentPlayer.opponent = player;
     player.opponent = currentPlayer;
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
+    }
+  }
+}
+
+// play
+class PlayedPlayerState extends TicTacState {
+  PlayedPlayerState({
+    required super.listeners,
+    required super.socket,
+    required super.players,
+    required super.currentPlayer,
+    required this.message
+  }) {
+    play();
+  }
+
+  final Message message;
+
+  void play() {
+    socket!.add(message());
+    currentPlayer.turn = false;
+    currentPlayer.opponent!.turn = true;
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
+    }
+  }
+}
+class OpponentPlayedPlayerState extends TicTacState {
+  OpponentPlayedPlayerState({
+    required super.listeners,
+    required super.socket,
+    required super.players,
+    required super.currentPlayer,
+  }) {
+    play();
+  }
+
+  void play() {
+    currentPlayer.turn = true;
+    currentPlayer.opponent!.turn = false;
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
+    }
+  }
+}
+
+// game ended
+class OpponentResignedPlayerState extends TicTacState {
+  OpponentResignedPlayerState({
+    required super.listeners,
+    required super.socket,
+    required super.players,
+    required super.currentPlayer,
+  }) {
+    resign();
+  }
+
+  void resign() {
+    if(currentPlayer.opponent!.score != 0) currentPlayer.opponent!.score--;
+    currentPlayer.opponent!.score++;
+    currentPlayer.opponent!.turn = null;
+    currentPlayer.turn = null;
+    currentPlayer.opponent!.opponent = null;
+    currentPlayer.opponent = null;
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
+    }
+  }
+}
+class PlayerLostState extends TicTacState {
+  PlayerLostState({
+    required super.listeners,
+    required super.socket,
+    required super.players,
+    required super.currentPlayer,
+  }) {
+    lose();
+  }
+
+  void lose() {
+    if(currentPlayer.opponent!.score != 0) currentPlayer.opponent!.score--;
+    currentPlayer.opponent!.score++;
+    currentPlayer.opponent!.turn = null;
+    currentPlayer.turn = null;
+    currentPlayer.opponent!.opponent = null;
+    currentPlayer.opponent = null;
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
+    }
+  }
+}
+class WonPlayerState extends TicTacState {
+  WonPlayerState({
+    required super.listeners,
+    required super.socket,
+    required super.players,
+    required super.currentPlayer,
+  }) {
+    won();
+  }
+
+  void won() {
+    var data = {
+      "action": "win",
+    };
+    socket!.add(jsonEncode(data));
+    currentPlayer.score++;
+    if(currentPlayer.opponent!.score != 0) currentPlayer.opponent!.score--;
+    currentPlayer.opponent!.turn = null;
+    currentPlayer.turn = null;
+    currentPlayer.opponent!.opponent = null;
+    currentPlayer.opponent = null;
+  }
+
+  @override
+  void onMessage(message) {
+    for(var i in listeners) {
+      i(message);
+    }
+  }
+}
+class ResignedPlayerState extends TicTacState {
+  ResignedPlayerState({
+    required super.listeners,
+    required super.socket,
+    required super.players,
+    required super.currentPlayer,
+  }) {
+    resign();
+  }
+
+  void resign() {
+    var data = {
+      "action": "resign",
+    };
+    socket!.add(jsonEncode(data));
+    if(currentPlayer.score != 0) currentPlayer.score--;
+    currentPlayer.opponent!.score++;
+    currentPlayer.opponent!.turn = null;
+    currentPlayer.turn = null;
+    currentPlayer.opponent!.opponent = null;
+    currentPlayer.opponent = null;
   }
 
   @override

@@ -1,4 +1,6 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_websockets/bloc/bloc/tictactoe/tictacbloc.dart';
@@ -7,7 +9,9 @@ import 'package:test_websockets/bloc/bloc/tictactoe/events.dart';
 import 'package:test_websockets/bloc/bloc/message.dart';
 
 class GameView extends StatefulWidget {
-  const GameView({super.key});
+  const GameView({super.key, required this.prevContext});
+
+  final BuildContext prevContext;
 
   @override
   State<GameView> createState() {
@@ -20,7 +24,7 @@ class _GameViewState extends State<GameView> {
 
   late final width = MediaQuery.of(context).size.width;
   late final height = MediaQuery.of(context).size.height;
-  late bool turn;
+  bool hasQuit = true;
 
   Future<void> popup({String title = "", String text = "", required BuildContext context}) async{
 
@@ -59,29 +63,34 @@ class _GameViewState extends State<GameView> {
 
   @override
   void dispose() {
+    BlocProvider.of<TicTacBloc>(widget.prevContext).add(AddListenerEvent(callback: onMessage));
+    if(hasQuit) {
+      BlocProvider.of<TicTacBloc>(widget.prevContext).add(const ResignPlayerEvent());
+    }
     super.dispose();
-    BlocProvider.of<TicTacBloc>(context).add(RemoveListenerEvent(callback: onMessage));
   }
 
   void onMessage(message){
-    var msg = Message.fromMap(message);
+    var msg = Message.fromMap(jsonDecode(message));
 
     switch(msg.action){
       case 'resigned':
-        popup(context: context, text: "You won", title: "GG !");
+        BlocProvider.of<TicTacBloc>(widget.prevContext).add(const WinPlayerEvent());
+        popup(context: context, text: "You won", title: "GG ! He just resigned");
         Navigator.of(context).pop();
         break;
 
       case 'lost':
+        BlocProvider.of<TicTacBloc>(widget.prevContext).add(const PlayerLoseEvent());
         popup(context: context, text: "You lost", title: "NT !");
         Navigator.of(context).pop();
         break;
 
       case 'play':
-        var data = (message["data"] as String).split(';');
-        grid[int.parse(data[0])] = data[1];
-
-        turn = true;
+        var data = int.parse(msg.data);
+        var character = BlocProvider.of<TicTacBloc>(widget.prevContext).state.currentPlayer.opponent!.character!;
+        grid[data] = character;
+        BlocProvider.of<TicTacBloc>(widget.prevContext).add(const OpponentPlayPlayerEvent());
         break;
     }
   }
@@ -136,7 +145,9 @@ class _GameViewState extends State<GameView> {
                           border: Border(bottom: BorderSide(color: Colors.white))
                         ),
                         child: Text(
-                          tictacState.currentPlayer.opponent!.name,
+                          (tictacState.currentPlayer.opponent != null) ?
+                            tictacState.currentPlayer.opponent!.name :
+                            "no opp",
                           style: const TextStyle(
                             color: Color(0xFF66EFD7),
                             fontSize: 20,
@@ -148,9 +159,11 @@ class _GameViewState extends State<GameView> {
                       Container(
                         margin: const EdgeInsets.only(top: 20, bottom: 20),
                         child: Text(
-                          (tictacState.currentPlayer.turn)
-                              ? "${tictacState.currentPlayer.name}'s turn"
-                              : "${tictacState.currentPlayer.opponent!.name}'s turn",
+                          (tictacState.currentPlayer.turn != null && tictacState.currentPlayer.opponent != null )
+                              ? (tictacState.currentPlayer.turn!)
+                                ? "${tictacState.currentPlayer.name}'s turn"
+                                : "${tictacState.currentPlayer.opponent!.name}'s turn"
+                              : "no one turns",
                           style: const TextStyle(
                             fontFamily: "Ubuntu",
                             fontSize: 25,
@@ -217,24 +230,27 @@ class _GameViewState extends State<GameView> {
       ),
     );
   }
+
   Widget _gridItem(int index){
-    Color color = grid[index] == "X" ? const Color(0xFF1a1a1a) : Colors.white;
+    Color color = grid[index] == "X" ? const Color(0xFF1a1a1a) : Colors.white38;
 
     return BlocBuilder<TicTacBloc, TicTacState>(
       builder: (context, tictacstate) {
         return InkWell(
           onTap: () {
-            if (grid[index] == "" && turn){
+            if (grid[index] == "" && tictacstate.currentPlayer.turn!){
               grid[index] = tictacstate.currentPlayer.character!;
 
-              if(verif()){
-                // TODO : win state
-                popup(context: context, text: "U won !", title: "GG !");
-                Navigator.pop(context);
-              }else{
-                // TODO : play state
-
-                // TODO : turn state
+              //verif()
+              if(true){
+                popup(context: context, text: "U won !", title: "GG !").whenComplete(() {
+                  hasQuit = false;
+                  Navigator.of(context).pop();
+                  BlocProvider.of<TicTacBloc>(context).add(const WinPlayerEvent());
+                });
+              } else {
+                var message = Message(action: "play", data: "$index");
+                BlocProvider.of<TicTacBloc>(context).add(PlayPlayerEvent(message: message));
               }
             }
           },
